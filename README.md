@@ -28,72 +28,6 @@ The objective is to predict the species of a new iris flower based on these meas
 
 ---
 
-# 🖼️ Project Preview
-
-## Iris Flower
-![Iris Flower](images/iris.png)
-
-
----
-
-# 📊 Dataset Information
-
-The dataset used is the classical Iris dataset available in Scikit-Learn.
-
-## Dataset Statistics
-
-| Feature       | Value                     |
-| ------------- | ------------------------- |
-| Total Samples | 150                       |
-| Features      | 4                         |
-| Classes       | 3                         |
-| Problem Type  | Multiclass Classification |
-
----
-
-## Feature Names
-
-| Features          |
-| ----------------- |
-| Sepal Length (cm) |
-| Sepal Width (cm)  |
-| Petal Length (cm) |
-| Petal Width (cm)  |
-
----
-
-# 🌺 Iris Flower Anatomy
-
-> Add the iris flower anatomy graphic below.
-
-```md
-![Iris Anatomy](images/iris-parts.png)
-```
-
----
-
-# 🔍 Exploratory Data Analysis
-
-A scatter matrix was used to visualize feature relationships and class separability.
-
-## Key Observations
-
-* Setosa is clearly separable from the other species.
-* Petal measurements provide strong predictive information.
-* Versicolor and Virginica exhibit partial overlap.
-
----
-
-# 📈 Scatter Matrix Visualization
-
-> Add your scatter matrix visualization here.
-
-```md
-![Scatter Matrix](images/scatter-matrix.png)
-```
-
----
-
 # ⚙️ Technologies Used
 
 | Tool         | Purpose                   |
@@ -102,7 +36,6 @@ A scatter matrix was used to visualize feature relationships and class separabil
 | NumPy        | Numerical Computing       |
 | Pandas       | Data Manipulation         |
 | Matplotlib   | Visualization             |
-| Seaborn      | Statistical Visualization |
 | Scikit-Learn | Machine Learning          |
 
 ---
@@ -125,8 +58,111 @@ Evaluation
 
 ---
 
-# 🔬 Model Training
+# 🖼️ Project Preview
 
+## Iris Flower
+<img width="640" height="448" alt="iris" src="https://github.com/user-attachments/assets/8bc47f43-f528-4ea5-9944-a25c8bb8c671" />
+
+---
+
+# 📊 Dataset Information
+
+The dataset used is the classical Iris dataset available in Scikit-Learn.
+
+```python
+from sklearn.datasets import load_iris
+iris_data= load_iris()
+print('Keys of iris_dataset: \n{}'.format(iris_data.keys()))
+print(iris_data['DESCR'][:193]+ '\n...')
+```
+
+## Dataset Statistics
+
+| Feature       | Value                     |
+| ------------- | ------------------------- |
+| Total Samples | 150                       |
+| Features      | 4                         |
+| Classes       | 3                         |
+| Problem Type  | Multiclass Classification |
+
+---
+
+## Feature Names
+```python
+print('Target names: {}'.format(iris_data['target_names']))
+print('Feature names: \n{}'.format(iris_data['feature_names']))
+```
+
+
+| Features          |
+| ----------------- |
+| Sepal Length (cm) |
+| Sepal Width (cm)  |
+| Petal Length (cm) |
+| Petal Width (cm)  |
+
+---
+
+# 🌺 Iris Flower Anatomy
+
+<img width="640" height="448" alt="iris_2" src="https://github.com/user-attachments/assets/4d3aea86-6c66-402c-9d11-63853d1d463a" />
+
+---
+
+# 🔍 Exploratory Data Analysis
+
+A scatter matrix was used to visualize feature relationships and class separability.
+
+## Key Observations
+
+* Setosa is clearly separable from the other species.
+* Petal measurements provide strong predictive information.
+* Versicolor and Virginica exhibit partial overlap.
+
+---
+
+# 📈 Scatter Matrix Visualization
+```python
+import pandas as pd
+import numpy as np
+import mglearn as mg
+import matplotlib.pyplot as plt
+from pandas.plotting import scatter_matrix
+
+iris = pd.DataFrame(X_train, columns=iris_data.feature_names)
+
+grr = scatter_matrix(
+    iris,
+    c=y_train,
+    figsize=(15, 15),
+    marker='o',
+    hist_kwds={'bins': 20},
+    s=60,
+    alpha=0.8,
+    cmap=mg.cm3
+)
+
+plt.show()
+```
+
+<img width="1229" height="1222" alt="scatter_matric" src="https://github.com/user-attachments/assets/9e271963-7433-4fcd-aabf-691152c0cfa2" />
+
+The three classes seem to be relatively well separated using the sepal and petal measurements. This means that a machine learning model will likely be able to learn to separate them.
+
+
+---
+
+
+
+# 🔬 Model Training
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(iris_data['data'], iris_data['target'], random_state=0)
+print('X_train shape: {}'.format(X_train.shape))
+print('y_train shape: {}'.format(y_train.shape))
+print('X_test shape: {}'.format(X_test.shape))
+print('y_test shape: {}'.format(y_test.shape))
+```
 The dataset was divided into:
 
 * **75% Training Data**
@@ -137,6 +173,10 @@ The model was trained using supervised learning techniques for multiclass classi
 ---
 
 # 📈 Model Performance
+
+```python
+print('Test set score: {:.2f}'.format(knn.score(X_test, y_test)))
+```
 
 | Metric       | Result |
 | ------------ | ------ |
@@ -151,16 +191,59 @@ The trained model achieved high accuracy on unseen test data.
 # 🚀 Sample Prediction
 
 ```python
-prediction = model.predict([[5.1, 3.5, 1.4, 0.2]])
-print(prediction)
+prediction = knn.predict(X_new)
+print('Prediction: {}'.format(prediction))
+print('Predicted target name: {}'.format(iris_data['target_names'][prediction]))
 ```
 
 ### Output
 
 ```python
-Setosa
+Prediction: [0]
+Predicted target name: ['setosa']
 ```
 
+---
+
+# 🧪 Test the Model with New Data
+
+Let us use the following unseen flower measurements to test the model:
+
+```python
+new_samples = [
+    [5.0, 3.4, 1.5, 0.2],
+    [6.4, 3.2, 4.5, 1.5],
+    [6.9, 3.1, 5.4, 2.1],
+    [5.5, 2.6, 4.4, 1.2],
+    [7.2, 3.6, 6.1, 2.5],
+    [4.8, 3.0, 1.4, 0.1],
+    [6.0, 2.9, 4.5, 1.5],
+    [6.7, 3.3, 5.7, 2.4],
+    [5.1, 3.8, 1.6, 0.2],
+    [6.3, 2.7, 4.9, 1.8]
+]
+predictions = knn.predict(new_samples)
+
+for sample, pred in zip(new_samples, predictions):
+    print(f"{sample} → {iris_data.target_names[pred]}")
+```
+
+---
+
+### Output
+
+```python
+[5.0, 3.4, 1.5, 0.2] → setosa
+[6.4, 3.2, 4.5, 1.5] → versicolor
+[6.9, 3.1, 5.4, 2.1] → virginica
+[5.5, 2.6, 4.4, 1.2] → versicolor
+[7.2, 3.6, 6.1, 2.5] → virginica
+[4.8, 3.0, 1.4, 0.1] → setosa
+[6.0, 2.9, 4.5, 1.5] → versicolor
+[6.7, 3.3, 5.7, 2.4] → virginica
+[5.1, 3.8, 1.6, 0.2] → setosa
+[6.3, 2.7, 4.9, 1.8] → virginica
+```
 ---
 
 # 📂 Project Structure
@@ -170,8 +253,8 @@ iris-flower-classification/
 │
 ├── data/
 ├── images/
-│   ├── iris-banner.png
-│   ├── iris-parts.png
+│   ├── iris.png
+│   ├── iris_2.png
 │   └── scatter-matrix.png
 │
 ├── notebooks/
@@ -179,7 +262,6 @@ iris-flower-classification/
 │
 ├── requirements.txt
 ├── README.md
-└── model.pkl
 ```
 
 ---
@@ -200,87 +282,20 @@ iris-flower-classification/
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/iris-flower-classification.git
+git clone [https://github.com/OdehUle/iris-flower-classification.git](https://github.com/OdehUle/-Iris-Flower-Classification-using-Machine-Learning
 ```
 
 Move into the project directory:
 
 ```bash
-cd iris-flower-classification
+cd Iris-Flower-Classification-using-Machine-Learning
 ```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Launch Jupyter Notebook:
-
-```bash
-jupyter notebook
-```
-
 ---
-
-# 📸 Recommended Additional Visualizations
-
-You can improve this project further by adding:
-
-* ✅ Confusion Matrix
-* ✅ Pairplot
-* ✅ Heatmap
-* ✅ Decision Boundary Plot
-* ✅ Feature Importance Plot
-
----
-
-# 🌟 Future Improvements
-
-* Deploy with Streamlit
-* Add real-time prediction interface
-* Hyperparameter tuning
-* Cross-validation experiments
-* Save trained model with Pickle
-
----
-
 # 🤝 Acknowledgement
 
 The Iris dataset is one of the most well-known datasets in Machine Learning and Statistics, introduced by Ronald A. Fisher.
 
 ---
-
-# 🧪 Test the Model with New Data
-
-Use the following unseen flower measurements to test the model:
-
-```python
-new_samples = [
-    [5.0, 3.4, 1.5, 0.2],
-    [6.4, 3.2, 4.5, 1.5],
-    [6.9, 3.1, 5.4, 2.1],
-    [5.5, 2.6, 4.4, 1.2],
-    [7.2, 3.6, 6.1, 2.5],
-    [4.8, 3.0, 1.4, 0.1],
-    [6.0, 2.9, 4.5, 1.5],
-    [6.7, 3.3, 5.7, 2.4],
-    [5.1, 3.8, 1.6, 0.2],
-    [6.3, 2.7, 4.9, 1.8]
-]
-```
-
-## Predict New Samples
-
-```python
-predictions = model.predict(new_samples)
-
-for sample, pred in zip(new_samples, predictions):
-    print(f"{sample} → {iris_dataset.target_names[pred]}")
-```
-
----
-
 # ⭐ Support
 
 If you found this project helpful, consider giving it a star ⭐ on GitHub.
